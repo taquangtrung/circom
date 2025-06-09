@@ -12,6 +12,8 @@ num-bigint-dig = "0.8.4"
 num-traits = "0.2.6"
 
 [dependencies]
+ansi_term = "0.12.1"
+ast_writers = { path = "../ast_writers" }
 program_structure = {path = "../program_structure"}
 lalrpop-util = { version="0.19.9",  features = ["lexer"]}
 regex = "1.1.2"

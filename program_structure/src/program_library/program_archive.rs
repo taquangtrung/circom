@@ -7,10 +7,11 @@ use super::bus_data::{BusData, BusInfo};
 use crate::abstract_syntax_tree::ast::FillMeta;
 use std::collections::HashSet;
 use crate::error_definition::Report;
+use serde_derive::Serialize;
 
 type Contents = Vec<(FileID, Vec<Definition>)>;
 
-#[derive(Clone)]
+#[derive(Clone, Serialize)]
 pub struct ProgramArchive {
     pub id_max: usize,
     pub file_id_main: FileID,
@@ -25,6 +26,7 @@ pub struct ProgramArchive {
     pub initial_template_call: Expression,
     pub custom_gates: bool,
 }
+
 impl ProgramArchive {
     pub fn new(
         file_library: FileLibrary,
@@ -74,7 +76,6 @@ impl ProgramArchive {
         } else {
             Err((file_library, reports))
         }
-
     }
     //file_id_main
     pub fn get_file_id_main(&self) -> &FileID {

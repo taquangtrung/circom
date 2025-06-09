@@ -3,10 +3,11 @@ use super::ast::{FillMeta, Statement};
 use super::file_definition::{FileID, FileLocation};
 use super::wire_data::*;
 use std::collections::{HashMap};
+use serde_derive::Serialize;
 
 pub type TemplateInfo = HashMap<String, TemplateData>;
 
-#[derive(Clone)]
+#[derive(Clone, Serialize)]
 pub struct TemplateData {
     file_id: FileID,
     name: String,

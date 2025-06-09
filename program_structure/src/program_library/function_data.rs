@@ -2,10 +2,11 @@ use super::ast::{FillMeta, Statement};
 use super::file_definition::FileID;
 use crate::file_definition::FileLocation;
 use std::collections::HashMap;
+use serde_derive::Serialize;
 
 pub type FunctionInfo = HashMap<String, FunctionData>;
 
-#[derive(Clone)]
+#[derive(Clone, Serialize)]
 pub struct FunctionData {
     name: String,
     file_id: FileID,
@@ -43,7 +44,7 @@ impl FunctionData {
     pub fn get_mut_body(&mut self) -> &mut Statement {
         &mut self.body
     }
-    pub fn set_body(&mut self, body: Statement){
+    pub fn set_body(&mut self, body: Statement) {
         self.body = body;
     }
     pub fn replace_body(&mut self, new: Statement) -> Statement {

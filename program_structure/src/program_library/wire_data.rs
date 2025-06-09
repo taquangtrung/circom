@@ -1,4 +1,5 @@
 use std::collections::{HashSet, HashMap};
+use serde_derive::Serialize;
 
 
 pub type TagInfo = HashSet<String>;
@@ -6,14 +7,14 @@ pub type WireInfo = HashMap<String, WireData>;
 pub type WireDeclarationOrder = Vec<(String, usize)>;
 
 
-#[derive(Clone, PartialEq, Eq)]
+#[derive(Clone, PartialEq, Eq, Serialize)]
 pub enum WireType {
     Signal,
     Bus(String),
 }
 
 
-#[derive(Clone)]
+#[derive(Clone, Serialize)]
 pub struct WireData {
     wire_type: WireType,
     dimension: usize,

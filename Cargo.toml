@@ -7,6 +7,7 @@ members = [
     "circom_algebra",
     "constraint_list",
     "program_structure",
+    "ast_writers",
     "constraint_generation",
     "constraint_writers",
     "constant_tracking",

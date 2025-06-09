@@ -2,10 +2,11 @@ use std::collections::HashMap;
 use super::ast::{FillMeta, Statement, VariableType, SignalType};
 use super::file_definition::{FileID, FileLocation};
 use super::wire_data::*;
+use serde_derive::Serialize;
 
 pub type BusInfo = HashMap<String, BusData>;
 
-#[derive(Clone)]
+#[derive(Clone, Serialize)]
 pub struct BusData {
     file_id: FileID,
     name: String,
