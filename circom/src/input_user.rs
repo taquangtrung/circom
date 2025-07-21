@@ -21,7 +21,8 @@ pub struct Input {
     pub no_asm_flag: bool,
     pub r1cs_flag: bool,
     pub sym_flag: bool,
-    pub json_ast_flag: bool,
+    pub json_program_ast_flag: bool,
+    pub json_program_archive_flag: bool,
     pub json_constraint_flag: bool,
     pub json_substitution_flag: bool,
     pub main_inputs_flag: bool,
@@ -97,7 +98,8 @@ impl Input {
             r1cs_flag: input_processing::get_r1cs(&matches),
             sym_flag: input_processing::get_sym(&matches),
             main_inputs_flag: input_processing::get_main_inputs_log(&matches),
-            json_ast_flag: input_processing::get_json_ast(&matches),
+            json_program_ast_flag: input_processing::get_json_program_ast(&matches),
+            json_program_archive_flag: input_processing::get_json_program_archive(&matches),
             json_constraint_flag: input_processing::get_json_constraints(&matches),
             json_substitution_flag: input_processing::get_json_substitutions(&matches),
             print_ir_flag: input_processing::get_ir(&matches),
@@ -193,8 +195,11 @@ impl Input {
     pub fn r1cs_flag(&self) -> bool {
         self.r1cs_flag
     }
-    pub fn json_ast_flag(&self) -> bool {
-        self.json_ast_flag
+    pub fn json_program_ast_flag(&self) -> bool {
+        self.json_program_ast_flag
+    }
+    pub fn json_program_archive_flag(&self) -> bool {
+        self.json_program_archive_flag
     }
     pub fn json_constraints_flag(&self) -> bool {
         self.json_constraint_flag
@@ -303,8 +308,12 @@ mod input_processing {
         }
     }
 
-    pub fn get_json_ast(matches: &ArgMatches) -> bool {
-        matches.is_present("print_json_ast")
+    pub fn get_json_program_ast(matches: &ArgMatches) -> bool {
+        matches.is_present("print_json_program_ast")
+    }
+
+    pub fn get_json_program_archive(matches: &ArgMatches) -> bool {
+        matches.is_present("print_json_program_archive")
     }
 
     pub fn get_json_constraints(matches: &ArgMatches) -> bool {
@@ -445,11 +454,18 @@ mod input_processing {
                     .help("Path to the directory where the output will be written"),
             )
             .arg(
-                Arg::with_name("print_json_ast")
+                Arg::with_name("print_json_program_ast")
                     .long("ast")
                     .takes_value(false)
                     .display_order(120)
                     .help("Outputs the circuit AST in JSON format"),
+            )
+            .arg(
+                Arg::with_name("print_json_program_archive")
+                    .long("archive")
+                    .takes_value(false)
+                    .display_order(120)
+                    .help("Outputs the circuit archive in JSON format"),
             )
             .arg(
                 Arg::with_name("print_json_c")

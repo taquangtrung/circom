@@ -6,7 +6,10 @@ mod type_analysis_user;
 
 const VERSION: &'static str = env!("CARGO_PKG_VERSION");
 
+use std::path::PathBuf;
+
 use ansi_term::Colour;
+use ast_writers::ast_writer::AstWriter;
 use input_user::Input;
 fn main() {
     let result = start();
@@ -25,6 +28,20 @@ fn start() -> Result<(), ()> {
     let user_input = Input::new()?;
     let mut program_archive = parser_user::parse_project(&user_input)?;
     type_analysis_user::analyse_project(&mut program_archive)?;
+    if user_input.json_program_archive_flag() {
+        let input_file = PathBuf::from(user_input.input_file());
+        let input_file_stem = input_file.file_stem().unwrap().to_str().unwrap().to_string();
+        let mut output_path = input_file.parent().unwrap().to_path_buf();
+        output_path.push(format!("{input_file_stem}.archive.json"));
+        let json_archive_file = output_path.to_str().unwrap().to_string();
+        let mut ast_writer = AstWriter::new(json_archive_file).unwrap();
+        // generate_json_ast(&mut ast_writer, &program_archive)?;
+        if let Ok(()) = ast_writer.serialize_program_archive(&program_archive) {
+            println!("{} {}", Colour::Green.paint("Program archive written to:"), ast_writer.output_file);
+        } else {
+            eprintln!("{}", Colour::Red.paint("Could not write the output in the given path"));
+        }
+    }
 
     let config = ExecutionConfig {
         no_rounds: user_input.no_rounds(),
