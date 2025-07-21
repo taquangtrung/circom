@@ -3,6 +3,7 @@ use std::path::PathBuf;
 pub struct Input {
     pub input_program: PathBuf,
     pub out_r1cs: PathBuf,
+    pub out_json_ast: PathBuf,
     pub out_json_constraints: PathBuf,
     pub out_json_substitutions: PathBuf,
     pub out_wat_code: PathBuf,
@@ -21,7 +22,7 @@ pub struct Input {
     pub no_asm_flag: bool,
     pub r1cs_flag: bool,
     pub sym_flag: bool,
-    pub json_ast_flag: bool,
+    pub json_program_ast_flag: bool,
     pub json_constraint_flag: bool,
     pub json_substitution_flag: bool,
     pub main_inputs_flag: bool,
@@ -47,7 +48,6 @@ const JS: &'static str = "js";
 const DAT: &'static str = "dat";
 const SYM: &'static str = "sym";
 const JSON: &'static str = "json";
-
 impl Input {
     pub fn new() -> Result<Input, ()> {
         use ansi_term::Colour;
@@ -80,6 +80,9 @@ impl Input {
             out_c_code: Input::build_output(&output_c_path, &file_name, CPP),
             out_c_dat: Input::build_output(&output_c_path, &file_name, DAT),
             out_sym: Input::build_output(&output_path, &file_name, SYM),
+            out_json_ast: Input::build_output(&output_path,
+                                              &format!("{}_ast", file_name),
+                                              JSON),
             out_json_constraints: Input::build_output(
                 &output_path,
                 &format!("{}_constraints", file_name),
@@ -97,7 +100,7 @@ impl Input {
             r1cs_flag: input_processing::get_r1cs(&matches),
             sym_flag: input_processing::get_sym(&matches),
             main_inputs_flag: input_processing::get_main_inputs_log(&matches),
-            json_ast_flag: input_processing::get_json_ast(&matches),
+            json_program_ast_flag: input_processing::get_json_program_ast(&matches),
             json_constraint_flag: input_processing::get_json_constraints(&matches),
             json_substitution_flag: input_processing::get_json_substitutions(&matches),
             print_ir_flag: input_processing::get_ir(&matches),
@@ -169,6 +172,9 @@ impl Input {
     pub fn dat_file(&self) -> &str {
         self.out_c_dat.to_str().unwrap()
     }
+    pub fn json_ast_file(&self) -> &str {
+        self.out_json_ast.to_str().unwrap()
+    }
     pub fn json_constraints_file(&self) -> &str {
         self.out_json_constraints.to_str().unwrap()
     }
@@ -193,8 +199,8 @@ impl Input {
     pub fn r1cs_flag(&self) -> bool {
         self.r1cs_flag
     }
-    pub fn json_ast_flag(&self) -> bool {
-        self.json_ast_flag
+    pub fn json_program_ast_flag(&self) -> bool {
+        self.json_program_ast_flag
     }
     pub fn json_constraints_flag(&self) -> bool {
         self.json_constraint_flag
@@ -303,9 +309,10 @@ mod input_processing {
         }
     }
 
-    pub fn get_json_ast(matches: &ArgMatches) -> bool {
-        matches.is_present("print_json_ast")
+    pub fn get_json_program_ast(matches: &ArgMatches) -> bool {
+        matches.is_present("print_json_program_ast")
     }
+
 
     pub fn get_json_constraints(matches: &ArgMatches) -> bool {
         matches.is_present("print_json_c")
@@ -445,7 +452,7 @@ mod input_processing {
                     .help("Path to the directory where the output will be written"),
             )
             .arg(
-                Arg::with_name("print_json_ast")
+                Arg::with_name("print_json_program_ast")
                     .long("ast")
                     .takes_value(false)
                     .display_order(120)

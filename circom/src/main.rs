@@ -6,6 +6,8 @@ mod type_analysis_user;
 
 const VERSION: &'static str = env!("CARGO_PKG_VERSION");
 
+use std::path::{Path, PathBuf};
+
 use ansi_term::Colour;
 use input_user::Input;
 fn main() {

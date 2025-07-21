@@ -55,7 +55,10 @@ impl Serialize for FileLibrary {
         let mut file_id_mapping: Vec<(usize, String)> = Vec::new();
         for i in 0..self.file_id_max {
             if let Some(file) = files.get(i as usize) {
-                let file_name: String = serde_json::from_str(file.name()).unwrap();
+                let file_name = file.name();
+                // use serde_json to normalize the file name, if it is is a JSON String format.
+                let file_name: String =
+                    serde_json::from_str(file_name).unwrap_or_else(|_| file_name.to_string());
                 file_id_mapping.push((i as usize, file_name));
             }
         }

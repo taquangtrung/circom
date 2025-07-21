@@ -9,14 +9,17 @@ pub fn parse_project(input_info: &Input) -> Result<ProgramArchive, ()> {
     //We get the prime number from the input
     let prime = UsefulConstants::new(&input_info.prime()).get_p().clone();
     let flag_no_init = input_info.flag_no_init();
-    let json_ast_flag = input_info.json_ast_flag();
+    let output_json_ast_file = match input_info.json_program_ast_flag() {
+        false => None,
+        _ => Some(input_info.json_ast_file()),
+    };
     let result_program_archive = parser::run_parser(
         initial_file,
         VERSION,
         input_info.get_link_libraries().to_vec(),
         &prime,
         flag_no_init,
-        json_ast_flag,
+        output_json_ast_file,
     );
     match result_program_archive {
         Result::Err((file_library, report_collection)) => {
