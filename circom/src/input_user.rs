@@ -3,6 +3,8 @@ use std::path::PathBuf;
 pub struct Input {
     pub input_program: PathBuf,
     pub out_r1cs: PathBuf,
+    pub out_json_ast: PathBuf,
+    pub out_json_archive: PathBuf,
     pub out_json_constraints: PathBuf,
     pub out_json_substitutions: PathBuf,
     pub out_wat_code: PathBuf,
@@ -48,7 +50,6 @@ const JS: &'static str = "js";
 const DAT: &'static str = "dat";
 const SYM: &'static str = "sym";
 const JSON: &'static str = "json";
-
 impl Input {
     pub fn new() -> Result<Input, ()> {
         use ansi_term::Colour;
@@ -81,6 +82,12 @@ impl Input {
             out_c_code: Input::build_output(&output_c_path, &file_name, CPP),
             out_c_dat: Input::build_output(&output_c_path, &file_name, DAT),
             out_sym: Input::build_output(&output_path, &file_name, SYM),
+            out_json_ast: Input::build_output(&output_path,
+                                              &format!("{}_ast", file_name),
+                                              JSON),
+            out_json_archive: Input::build_output(&output_path,
+                                                  &format!("{}_archive", file_name),
+                                                  JSON),
             out_json_constraints: Input::build_output(
                 &output_path,
                 &format!("{}_constraints", file_name),
@@ -170,6 +177,12 @@ impl Input {
     }
     pub fn dat_file(&self) -> &str {
         self.out_c_dat.to_str().unwrap()
+    }
+    pub fn json_ast_file(&self) -> &str {
+        self.out_json_ast.to_str().unwrap()
+    }
+    pub fn json_archive_file(&self) -> &str {
+        self.out_json_archive.to_str().unwrap()
     }
     pub fn json_constraints_file(&self) -> &str {
         self.out_json_constraints.to_str().unwrap()

@@ -68,7 +68,7 @@ pub fn run_parser(
     link_libraries: Vec<PathBuf>,
     field: &BigInt,
     flag_no_init: bool,
-    json_program_ast_flag: bool,
+    output_json_ast_file: Option<&str>,
 ) -> Result<(ProgramArchive, ReportCollection), (FileLibrary, ReportCollection)> {
     let mut file_library = FileLibrary::new();
     let mut definitions = Vec::new();
@@ -88,12 +88,7 @@ pub fn run_parser(
         let file_id = file_library.add_file(path.clone(), src.clone());
         let program = parser_logic::parse_file(&src, file_id, field, flag_no_init)
             .map_err(|e| (file_library.clone(), e))?;
-        if json_program_ast_flag {
-            let input_file = PathBuf::from(path.clone());
-            let input_file_stem = input_file.file_stem().unwrap().to_str().unwrap().to_string();
-            let mut output_path = input_file.parent().unwrap().to_path_buf();
-            output_path.push(format!("{input_file_stem}.ast.json"));
-            let json_ast_file = output_path.to_str().unwrap().to_string();
+        if let Some(json_ast_file) = output_json_ast_file {
             let mut ast_writer = AstWriter::new(json_ast_file).unwrap();
             // generate_json_ast(&mut ast_writer, &program_archive)?;
             if let Ok(()) = ast_writer.serialize_program_ast(&program) {

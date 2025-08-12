@@ -11,10 +11,10 @@ pub struct AstWriter {
 }
 
 impl AstWriter {
-    pub fn new(output_file: String) -> Result<AstWriter, ()> {
-        let file = File::create(&output_file).map_err(|_err| {})?;
+    pub fn new(output_file: &str) -> Result<AstWriter, ()> {
+        let file = File::create(output_file).map_err(|_err| {})?;
         let writer = BufWriter::new(file);
-        Result::Ok(AstWriter { output_file, ast_writer: writer })
+        Result::Ok(AstWriter { output_file: output_file.to_owned(), ast_writer: writer })
     }
 
     /// Serialize program AST to JSON file using `serde_json`
