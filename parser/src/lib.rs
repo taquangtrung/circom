@@ -93,6 +93,7 @@ pub fn run_parser(
             // generate_json_ast(&mut ast_writer, &program_archive)?;
             if let Ok(()) = ast_writer.serialize_program_ast(&program) {
                 println!("{} {}", Colour::Green.paint("AST written to:"), ast_writer.output_file);
+                std::process::exit(0);
             } else {
                 eprintln!("{}", Colour::Red.paint("Could not write the output in the given path"));
             }
