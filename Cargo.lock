@@ -30,6 +30,15 @@ dependencies = [
 ]
 
 [[package]]
+name = "ast_writers"
+version = "0.1.0"
+dependencies = [
+ "program_structure",
+ "serde",
+ "serde_json",
+]
+
+[[package]]
 name = "atty"
 version = "0.2.14"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -636,6 +645,8 @@ dependencies = [
 name = "parser"
 version = "2.2.3"
 dependencies = [
+ "ansi_term",
+ "ast_writers",
  "lalrpop",
  "lalrpop-util",
  "num-bigint-dig",

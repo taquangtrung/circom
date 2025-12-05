@@ -11,11 +11,13 @@ pub fn parse_project(input_info: &Input) -> Result<ProgramArchive, ()> {
     let prime = UsefulConstants::new(&input_info.prime()).get_p().clone();
     let flag_no_init = input_info.flag_no_init();
     let result_program_archive = parser::run_parser(
-        initial_file, 
-        VERSION, 
-        input_info.get_link_libraries().to_vec(), 
+        initial_file,
+        VERSION,
+        input_info.get_link_libraries().to_vec(),
         &prime,
-        flag_no_init
+        flag_no_init,
+        input_info.output_path.clone(),
+        input_info.ast_flag
     );
     match result_program_archive {
         Result::Err((file_library, report_collection)) => {

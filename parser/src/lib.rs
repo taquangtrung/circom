@@ -21,6 +21,8 @@ use program_structure::file_definition::{FileLibrary};
 use program_structure::program_archive::ProgramArchive;
 use std::path::{PathBuf, Path};
 use syntax_sugar_remover::{apply_syntactic_sugar};
+use ansi_term::Colour;
+use ast_writers::ast_writer::AstWriter;
 
 use std::str::FromStr;
 
@@ -61,8 +63,10 @@ pub fn run_parser(
     file: String,
     version: &str,
     link_libraries: Vec<PathBuf>,
-    field: &BigInt,     
-    flag_no_init: bool
+    field: &BigInt,
+    flag_no_init: bool,
+    output_path: PathBuf,
+    generate_json_ast: bool,
 ) -> Result<(ProgramArchive, ReportCollection), (FileLibrary, ReportCollection)> {
     let mut file_library = FileLibrary::new();
     let mut definitions = Vec::new();
@@ -82,6 +86,14 @@ pub fn run_parser(
         let file_id = file_library.add_file(path.clone(), src.clone());
         let program =
             parser_logic::parse_file(&src, file_id, field, flag_no_init).map_err(|e| (file_library.clone(), e))?;
+        if generate_json_ast {
+            let mut ast_writer = AstWriter::new(&output_path, &path).unwrap();
+            if let Ok(()) = ast_writer.serialize_ast(&program) {
+                println!("{} {}", Colour::Green.paint("AST written to:"), ast_writer.output_file);
+            } else {
+                eprintln!("{}", Colour::Red.paint("Could not write the output in the given path"));
+            }
+        }
         if let Some(main) = program.main_component {
             main_components.push((file_id, main, program.custom_gates));
         }
