@@ -16,7 +16,7 @@ pub struct Input {
     pub out_c_dat: PathBuf,
     pub out_sym: PathBuf,
     //pub field: &'static str,
-    pub ast_flag: bool,
+    pub only_ast_flag: bool,
     pub c_flag: bool,
     pub wasm_flag: bool,
     pub wat_flag: bool,
@@ -93,7 +93,7 @@ impl Input {
                 &format!("{}_substitutions", file_name),
                 JSON,
             ),
-            ast_flag: input_processing::get_json_ast(&matches),
+            only_ast_flag: input_processing::get_only_json_ast(&matches),
             wat_flag: input_processing::get_wat(&matches),
             wasm_flag: input_processing::get_wasm(&matches),
             c_flag: c_flag,
@@ -312,8 +312,8 @@ mod input_processing {
         }
     }
 
-    pub fn get_json_ast(matches: &ArgMatches) -> bool {
-        matches.is_present("print_json_ast")
+    pub fn get_only_json_ast(matches: &ArgMatches) -> bool {
+        matches.is_present("only_print_json_ast")
     }
 
     pub fn get_json_constraints(matches: &ArgMatches) -> bool {
@@ -482,11 +482,11 @@ mod input_processing {
                     .help("Outputs the substitution applied in the simplification phase in json format"),
             )
             .arg(
-                Arg::with_name("print_json_ast")
-                    .long("ast")
+                Arg::with_name("only_print_json_ast")
+                    .long("only-ast")
                     .takes_value(false)
                     .display_order(120)
-                    .help("Outputs the circuit AST in JSON format"),
+                    .help("Only outputs the circuit AST in JSON format"),
             )
             .arg(
                 Arg::with_name("print_sym")

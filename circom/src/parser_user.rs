@@ -17,7 +17,7 @@ pub fn parse_project(input_info: &Input) -> Result<ProgramArchive, ()> {
         &prime,
         flag_no_init,
         input_info.output_path.clone(),
-        input_info.ast_flag
+        input_info.only_ast_flag
     );
     match result_program_archive {
         Result::Err((file_library, report_collection)) => {

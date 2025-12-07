@@ -66,7 +66,7 @@ pub fn run_parser(
     field: &BigInt,
     flag_no_init: bool,
     output_path: PathBuf,
-    generate_json_ast: bool,
+    only_generate_json_ast: bool,
 ) -> Result<(ProgramArchive, ReportCollection), (FileLibrary, ReportCollection)> {
     let mut file_library = FileLibrary::new();
     let mut definitions = Vec::new();
@@ -86,7 +86,7 @@ pub fn run_parser(
         let file_id = file_library.add_file(path.clone(), src.clone());
         let program =
             parser_logic::parse_file(&src, file_id, field, flag_no_init).map_err(|e| (file_library.clone(), e))?;
-        if generate_json_ast {
+        if only_generate_json_ast {
             let mut ast_writer = AstWriter::new(&output_path, &path).unwrap();
             if let Ok(()) = ast_writer.serialize_ast(&program) {
                 println!("{} {}", Colour::Green.paint("AST written to:"), ast_writer.output_file);
@@ -122,6 +122,12 @@ pub fn run_parser(
             )
             .map_err(|e| (file_library.clone(), vec![e]))?
         }
+    }
+
+    if only_generate_json_ast{
+        println!("Finished generating ASTs!");
+        println!("Exiting now...");
+        std::process::exit(0);
     }
 
     if main_components.len() == 0 {
